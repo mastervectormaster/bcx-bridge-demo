@@ -4,6 +4,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
 
 import { ethers } from "ethers";
 
@@ -21,6 +22,7 @@ const Metamask = () => {
     addr: "",
     amount: 0,
   });
+  const [loadingMsg, setLoadingMsg] = useState("");
 
   const shortAddr = (fullAddr) => {
     return fullAddr.slice(0, 10) + "...";
@@ -29,25 +31,13 @@ const Metamask = () => {
   const connectToMetamask = async () => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      // const signer = provider.getSigner();
       const accounts = await provider.send("eth_requestAccounts", []);
       setAddresss(accounts[0]);
       setProvider(provider);
     } catch (e) {
+      console.log(e);
       alert("MetaMask not installed");
     }
-
-    // const bcxContract = new ethers.Contract(BCX_CONTRACT_ADDR, BcxAbi, signer);
-
-    // await bcxContract.approve(BRIDGE_CONTRACT_ADDR, 10000);
-
-    // const bridgeContract = new ethers.Contract(
-    //   BRIDGE_CONTRACT_ADDR,
-    //   BridgeAbi,
-    //   signer
-    // );
-
-    // await bridgeContract.sendToCosmos(BCX_CONTRACT_ADDR, "cosmos123", 10000);
   };
 
   const handleTransfer = async (e) => {
@@ -60,7 +50,10 @@ const Metamask = () => {
         signer
       );
 
-      await bcxContract.approve(BRIDGE_CONTRACT_ADDR, 10000);
+      setLoadingMsg("Approving BCX Token transfer...");
+      await bcxContract.approve(BRIDGE_CONTRACT_ADDR, formData.amount);
+
+      setLoadingMsg("");
 
       const bridgeContract = new ethers.Contract(
         BRIDGE_CONTRACT_ADDR,
@@ -68,8 +61,18 @@ const Metamask = () => {
         signer
       );
 
-      await bridgeContract.sendToCosmos(BCX_CONTRACT_ADDR, "cosmos123", 10000);
+      setLoadingMsg("Bridging BCX Token to Blockx...");
+
+      await bridgeContract.sendToCosmos(
+        BCX_CONTRACT_ADDR,
+        formData.addr,
+        formData.amount
+      );
+
+      setLoadingMsg("");
     } catch (e) {
+      console.log(e);
+      setLoadingMsg("");
       alert("MetaMask not installed");
     }
   };
@@ -132,10 +135,27 @@ const Metamask = () => {
                   <Button
                     variant="primary"
                     className="w-100"
+                    disabled={loadingMsg !== ""}
+                    onClick={handleTransfer}
+                  >
+                    {loadingMsg !== "" && (
+                      <Spinner
+                        as="span"
+                        animation="grow"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span className="ml-3">{loadingMsg || "Transfer"}</span>
+                  </Button>
+                  {/* <Button
+                    variant="primary"
+                    className="w-100"
                     onClick={handleTransfer}
                   >
                     Transfer
-                  </Button>
+                  </Button> */}
                 </Col>
               </Row>
             </Form>
