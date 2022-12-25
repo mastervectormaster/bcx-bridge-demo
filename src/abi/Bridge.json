@@ -1,64 +1,65 @@
 [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_bcxToken",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidSendToCosmos",
-    "type": "error"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "_tokenContract",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "_sender",
-        "type": "address"
-      },
-      {
         "indexed": false,
-        "internalType": "string",
-        "name": "_destination",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "_amount",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "name": "SendToCosmosEvent",
+    "name": "BridgeRequested",
     "type": "event"
   },
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "chainId",
+        "type": "uint256"
+      },
+      {
         "internalType": "address",
-        "name": "_tokenContract",
+        "name": "recipient",
         "type": "address"
       },
       {
-        "internalType": "string",
-        "name": "_destination",
-        "type": "string"
-      },
-      {
         "internalType": "uint256",
-        "name": "_amount",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "name": "sendToCosmos",
+    "name": "bridge",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
