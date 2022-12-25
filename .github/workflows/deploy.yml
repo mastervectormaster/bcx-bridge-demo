@@ -13,8 +13,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
-
-          scripts: |
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
             mkdir test
             cd test
             git clone https://github.com/mastervectormaster/bcx-bridge-demo.git
